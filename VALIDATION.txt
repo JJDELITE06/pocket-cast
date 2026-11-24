@@ -1,0 +1,19 @@
+Pocket Cast 1.1 - validation recorded 2026-11-24
+
+PASS: frontend compiled with the Windows C# compiler.
+PASS: WPF markup parsed using the Windows framework; all 24 referenced controls exist.
+PASS: source review of USB adapter gate, interface override wiring and disconnect handling.
+PASS: saved native tests (2026-11-20) verify default and selected-interface AirPlay/RAOP
+      discovery and RTSP responses. Six invalid/unavailable IPv4 cases do not advertise.
+PASS: all eight native tests release ports after termination.
+PASS: runtime binary hashes, patch hash, and all 98 dependency source archives checked.
+
+LIMIT: Windows Application Control blocked launching the new frontend for execution
+       self-tests and live GUI testing. No policy changes or bypasses were attempted.
+LIMIT: live USB/iPhone mirroring and cable-disconnect behavior have not been tested.
+LIMIT: ARM64 PCs require a compatible ARM64 iPhone Ethernet driver for USB
+       tethering. USB mode requires a working iPhone Ethernet adapter.
+
+Version 1.0's existing audio/video pipeline checks are recorded in its earlier release.
+The codecs and maximum-quality request remain unchanged. Actual quality still requires
+testing with the iPhone. This release implements USB tethering, not raw USB capture.

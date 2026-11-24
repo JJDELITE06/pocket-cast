@@ -1,0 +1,138 @@
+--- a/lib/mdnsd/mdnsd.c
++++ b/lib/mdnsd/mdnsd.c
+@@ -345,16 +345,37 @@
+     return query_type == record_type || query_type == DNS_TYPE_ANY;
+ }
+ 
+-static uint32_t mdns_get_default_ipv4(void)
++static uint32_t mdns_get_default_ipv4(int *selection_error)
+ {
+     uint32_t addr = 0;
++    *selection_error = 0;
+ #ifdef _WIN32
++    /* Pocket Cast: select USB Ethernet without changing Windows routing. */
++    const char *requested = getenv("POCKETCAST_IPV4");
++    struct in_addr requested_addr;
++    int explicit_selection = requested && *requested;
++    if (explicit_selection) {
++        uint32_t host_addr;
++        if (inet_pton(AF_INET, requested, &requested_addr) != 1) {
++            fprintf(stderr, "Pocket Cast: POCKETCAST_IPV4 must be a valid IPv4 address.\n");
++            *selection_error = -1;
++            return 0;
++        }
++        host_addr = ntohl(requested_addr.s_addr);
++        if ((host_addr >> 24) == 0 || (host_addr >> 24) == 127 ||
++            (host_addr >> 24) >= 224 || (host_addr & 0xffff0000U) == 0xa9fe0000U) {
++            fprintf(stderr, "Pocket Cast: POCKETCAST_IPV4 must be a usable unicast IPv4 address.\n");
++            *selection_error = -1;
++            return 0;
++        }
++    }
+     ULONG buflen = 15000;
+     PIP_ADAPTER_ADDRESSES pAddresses = NULL;
+     DWORD dwRetVal = 0;
+ 
+     pAddresses = (IP_ADAPTER_ADDRESSES *) malloc(buflen);
+     if (!pAddresses) {
++        if (explicit_selection) *selection_error = -1;
+         return 0;
+     }
+     dwRetVal = GetAdaptersAddresses(AF_INET, GAA_FLAG_INCLUDE_GATEWAYS, NULL, pAddresses, &buflen);
+@@ -362,6 +383,7 @@
+         free(pAddresses);
+         pAddresses = (IP_ADAPTER_ADDRESSES *) malloc(buflen); 
+         if (!pAddresses) {
++            if (explicit_selection) *selection_error = -1;
+             return 0;
+         }
+         dwRetVal = GetAdaptersAddresses(AF_INET, GAA_FLAG_INCLUDE_GATEWAYS, NULL, pAddresses, &buflen);
+@@ -370,6 +392,24 @@
+     if (dwRetVal == NO_ERROR) {
+         PIP_ADAPTER_ADDRESSES pCurr = pAddresses;
+         while (pCurr) {
++            if (explicit_selection) {
++                if (pCurr->OperStatus == IfOperStatusUp &&
++                    pCurr->IfType != IF_TYPE_SOFTWARE_LOOPBACK) {
++                    PIP_ADAPTER_UNICAST_ADDRESS unicast = pCurr->FirstUnicastAddress;
++                    while (unicast) {
++                        struct sockaddr *socket_addr = unicast->Address.lpSockaddr;
++                        if (socket_addr && socket_addr->sa_family == AF_INET &&
++                            ((struct sockaddr_in *)socket_addr)->sin_addr.s_addr == requested_addr.s_addr) {
++                            addr = requested_addr.s_addr;
++                            break;
++                        }
++                        unicast = unicast->Next;
++                    }
++                }
++                if (addr) break;
++                pCurr = pCurr->Next;
++                continue;
++            }
+             // Precise target filters to bypass the Hyper-V virtual adapter loopback capture
+             if (pCurr->OperStatus == IfOperStatusUp && 
+                 pCurr->IfType != IF_TYPE_SOFTWARE_LOOPBACK &&
+@@ -389,6 +429,14 @@
+         }
+     }
+     free(pAddresses);
++    if (explicit_selection) {
++        if (!addr) {
++            fprintf(stderr, "Pocket Cast: selected IPv4 address %s is not assigned to an active network adapter. Reconnect USB and refresh.\n", requested);
++            *selection_error = -1;
++        } else {
++            fprintf(stderr, "Pocket Cast: AirPlay discovery uses selected interface %s.\n", requested);
++        }
++    }
+ #else    
+     int fd;
+     struct sockaddr_in remote;
+@@ -480,6 +528,11 @@
+ {
+     int fd;
+     int one = 1;
++    int strict_interface = 0;
++#ifdef _WIN32
++    const char *requested = getenv("POCKETCAST_IPV4");
++    strict_interface = requested && *requested;
++#endif
+     unsigned char ttl = 255;
+     unsigned char loop = 1;
+     struct sockaddr_in addr;
+@@ -500,7 +553,12 @@
+     if (iface_addr) {
+         struct in_addr iface;
+         iface.s_addr = iface_addr;
+-        setsockopt(fd, IPPROTO_IP, IP_MULTICAST_IF, (const char *) &iface, sizeof(iface));
++        if (setsockopt(fd, IPPROTO_IP, IP_MULTICAST_IF, (const char *) &iface, sizeof(iface)) == -1 && strict_interface) {
++            int error = SOCKET_GET_ERROR();
++            fprintf(stderr, "Pocket Cast: could not select the requested discovery interface.\n");
++            CLOSESOCKET(fd);
++            return -error;
++        }
+     }
+ 
+     memset(&addr, 0, sizeof(addr));
+@@ -520,7 +578,7 @@
+     if (setsockopt(fd, IPPROTO_IP, IP_ADD_MEMBERSHIP,
+                    (const char *) &mreq, sizeof(mreq)) == -1) {
+         int error = SOCKET_GET_ERROR();
+-        if (iface_addr) {
++        if (iface_addr && !strict_interface) {
+             mreq.imr_interface.s_addr = htonl(INADDR_ANY);
+             if (setsockopt(fd, IPPROTO_IP, IP_ADD_MEMBERSHIP,
+                            (const char *) &mreq, sizeof(mreq)) == 0) {
+@@ -1035,7 +1093,12 @@
+     int error4 = 0;
+     int error6 = 0;
+ 
+-    mdnsd->ipv4_addr = mdns_get_default_ipv4();
++    int selection_error = 0;
++    mdnsd->ipv4_addr = mdns_get_default_ipv4(&selection_error);
++    if (selection_error) {
++        MUTEX_UNLOCK(mdnsd->mutex);
++        return selection_error;
++    }
+     mdns_get_default_ipv6(mdnsd->ipv6_addr, &mdnsd->ipv6_scope_id);
+ 
+     mdnsd->sock_fd4 = mdns_open_socket4(mdnsd->ipv4_addr);

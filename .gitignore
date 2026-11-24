@@ -1,0 +1,14 @@
+build/
+runtime/
+bin/
+obj/
+*.pem
+*.key
+*.pfx
+*.log
+settings.xml
+registry.bin
+.env
+.env.*
+native/source/
+native/msys64/

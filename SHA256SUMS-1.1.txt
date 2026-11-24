@@ -1,0 +1,2 @@
+fc8b29a4e7dbbac153a2c561c269190bcdd8aaf4e3b13b49793c1702d02d6eda  PocketCast-Windows-1.1.zip
+f6760c1e1ffc169e1d38876d0baa8b843c2430e4c39aeeb58f15581acc1b1136  PocketCast-Corresponding-Source-1.1.zip

@@ -1,0 +1,8 @@
+* text=auto
+*.cs text eol=crlf
+*.ps1 text eol=crlf
+*.sh text eol=lf
+*.html text eol=lf
+*.md text eol=lf
+*.zip binary
+*.patch whitespace=-blank-at-eol,-blank-at-eof

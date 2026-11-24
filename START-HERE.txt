@@ -1,0 +1,97 @@
+POCKET CAST 1.1 - iPHONE SCREEN + AUDIO FOR WINDOWS
+
+QUICK START
+1. Extract the entire PocketCast-Windows-1.1.zip file to a folder.
+2. Open PocketCast.exe. Keep the runtime folder beside the app.
+3. Connect your iPhone and PC to the same home network.
+4. Leave Maximum quality and audio enabled, then click Start receiver.
+5. On iPhone: open Control Center > Screen Mirroring > Pocket Cast - your PC.
+6. Enter the connection PIN shown in Pocket Cast if your iPhone asks.
+
+Your iPhone picture opens in a separate, resizable video window.
+Audio plays through your PC's default speakers or headphones.
+Stop from your iPhone's Screen Mirroring menu or Pocket Cast's Stop button.
+No iPhone app, account, subscription, or Apple Bonjour service is required.
+The first start can take longer while the included playback plugins are scanned.
+
+USB TETHERING MODE
+This mode sends AirPlay screen/audio over a USB network connection. It requires
+Personal Hotspot; this is not a direct QuickTime USB capture implementation.
+1. Install Apple Devices from Microsoft Store if needed for your iPhone drivers.
+2. Connect a USB cable that supports data. Unlock iPhone, tap Trust, and enter
+   the passcode on the phone if asked.
+3. Enable Settings > Personal Hotspot > Allow Others to Join on iPhone.
+4. Windows must detect an active Apple Mobile Device Ethernet connection.
+5. In Pocket Cast, select USB tethering - Personal Hotspot. Refresh and choose
+   the detected iPhone USB connection. Disconnect iPhone from other Wi-Fi while
+   keeping Personal Hotspot active, then click Start receiver.
+6. On iPhone: Control Center > Screen Mirroring > Pocket Cast - your PC.
+Keep the USB cable attached. The app stops if that USB network disappears.
+
+WINDOWS ON ARM
+USB tethering requires a compatible ARM64 iPhone Ethernet driver on ARM PCs.
+Apple Devices can recognize an iPhone without providing usable USB Ethernet.
+An Intel/AMD x64 network driver cannot run as an ARM64 kernel driver. This app
+does not install or replace drivers and only starts USB mode when Windows
+reports a working iPhone Ethernet adapter. Live USB mirroring is unverified.
+Wi-Fi mode remains available on supported Windows 11 ARM systems.
+
+Personal Hotspot can share cellular data with Windows. Other PC traffic may
+use your phone's data plan. Your carrier must support Personal Hotspot.
+
+QUALITY
+Maximum: request 3840 x 2160 at up to 60 fps; enable HEVC/H.265.
+High: request 1920 x 1080 at up to 60 fps; H.264 compatibility mode.
+Smooth: request 1280 x 720 at up to 60 fps; H.264 compatibility mode.
+Portrait video keeps the iPhone's aspect ratio. There is no forced stretching.
+
+The iPhone chooses the actual stream. Its model, iOS, content, Wi-Fi, GPU,
+and display can limit resolution and frame rate. AirPlay compresses video.
+This app does not promise pixel-perfect native resolution, lossless video,
+HDR, or 120 fps. Mirroring audio uses the format supplied by the iPhone;
+it is not a promise of lossless audio. Use strong 5 GHz/6 GHz Wi-Fi, and
+Ethernet for the PC if available. If Maximum is unstable, stop and try High.
+
+REQUIREMENTS
+Windows 10/11 on a 64-bit Intel/AMD PC. The x64 receiver can also run under
+Windows 11 ARM's x64 emulation. Frontend requires .NET Framework 4.8 or newer
+(normally included on current Windows 10/11). A Direct3D 11 capable GPU and
+working audio output are needed. The receiver and codecs are bundled.
+
+CONNECTION HELP
+If Windows Firewall prompts, allow runtime\uxplay.exe on your trusted private
+home network. The app does not automatically change firewall/network settings.
+Guest Wi-Fi isolation, VPN routing, and blocked multicast can prevent discovery.
+Check the PC's and iPhone's volume when audio is silent. Reconnect once if
+the first picture freezes. Some protected video services block mirroring.
+Microphone/call audio is not guaranteed. This app does not control the iPhone.
+
+DIAGNOSTICS AND REMOVAL
+Connection help and Receiver diagnostics are in the app. Save a diagnostic
+log if troubleshooting is needed. Logs can contain local network/device info.
+Pairing PIN text and the engine's PIN art are filtered from exported logs.
+Settings, the local receiver key, and codec cache live in %LOCALAPPDATA%\PocketCast.
+Close the app and remove its extracted folder to remove the portable app.
+You may also remove that local settings folder to reset it.
+
+VALIDATION
+Original 1.0 checked on Windows 11 ARM with the x64 receiver under emulation.
+Local checks passed for frontend launch/start/stop, AirPlay and RAOP mDNS
+discovery, RTSP OPTIONS, repeated receiver startup/cleanup, and finite WASAPI
+audio and Direct3D 11 video playback. H.264 and HEVC pipelines initialize.
+The 1.1 native patch passed default/selected-interface discovery and invalid
+interface rejection tests. The 1.1 frontend compiles, but Application Control
+blocked local execution, so its new USB controls have not had live GUI testing.
+No physical iPhone was available for a full live mirroring test, so actual
+iPhone compatibility, end-to-end quality, and latency still need your device.
+
+SOURCE AND LICENSES
+Pocket Cast's frontend is GPL-3.0-or-later; its complete source and build script
+are included in source\ in this download. UxPlay is GPL-3.0; its original
+source archive, native build scripts, package recipes, patches, and exact
+corresponding sources for bundled third-party runtime libraries are supplied
+separately in PocketCast-Corresponding-Source-1.1.zip alongside this download.
+That optional archive is large; it is not needed to run the app.
+See LICENSE.txt, THIRD-PARTY-NOTICES.txt, runtime\licenses, and runtime\PROVENANCE.json.
+
+Pocket Cast is independent of Apple. AirPlay and iPhone are Apple trademarks.

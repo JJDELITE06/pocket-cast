@@ -1,0 +1,24 @@
+POCKET CAST THIRD-PARTY NOTICES
+
+Receiver: UxPlay 1.74 experimental, built from source commit
+48f5ce47c9ef694afccfac907c9e8828329657fe, with NO_MARCH_NATIVE=ON and the
+included PocketCast-USB-interface.patch (modified 2026-11-20). This adds an
+optional validated POCKETCAST_IPV4 discovery-interface override for USB tethering.
+Upstream: https://github.com/FDH2/UxPlay
+License: GPL-3.0; full text in runtime/licenses/UxPlay-GPL-3.0.txt.
+UxPlay includes work derived from RPiPlay and the shairplay/openairplay
+projects; original notices are retained in its corresponding source.
+The experimental receiver uses built-in mDNS discovery.
+
+GStreamer, GLib, FFmpeg/libav, OpenSSL, libplist, MinGW runtime libraries,
+and other dependencies retain their respective upstream licenses/notices.
+Full per-package license files are in runtime/licenses. The complete
+package/version/license/source URL list and binary hashes are in
+runtime/PROVENANCE.json. Third-party names do not imply endorsement.
+
+Equivalent access to corresponding source is provided by the accompanying
+PocketCast-Corresponding-Source-1.1.zip. It includes the original UxPlay source
+and complete local patch,
+MSYS2 source package archives containing upstream sources/recipes/patches,
+and build/packaging scripts. Archive hashes are in SOURCE-MANIFEST.json.
+Frontend source/build instructions are also included directly in this app ZIP.

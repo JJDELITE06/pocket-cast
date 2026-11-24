@@ -1,0 +1,44 @@
+POCKET CAST CORRESPONDING SOURCE
+
+Frontend: frontend/src/PocketCast.cs, frontend/build.ps1.
+On Windows with .NET Framework 4.8 installed, run build.ps1 in PowerShell.
+It compiles PocketCast.exe with Windows' C# compiler and runs argument tests.
+No third-party frontend packages or network access are required.
+
+Receiver: UxPlay source zip at this archive's root, pinned to commit
+48f5ce47c9ef694afccfac907c9e8828329657fe. Version 1.1 also applies
+PocketCast-USB-interface.patch. This optional validated POCKETCAST_IPV4
+override selects the discovery adapter for USB tethering; invalid/unavailable
+addresses fail startup without silently selecting another adapter.
+
+Native build environment: MSYS2 UCRT64 on Windows, x86_64/UCRT.
+Install the UCRT64 C/C++ compiler, CMake, Ninja, pkgconf, OpenSSL,
+libplist, GStreamer core/base/good/bad/ugly/libav packages and their dependencies.
+Exact runtime dependency versions are in PROVENANCE.json.
+The msys2-source-packages folder contains the corresponding .src.tar.zst
+archives from MSYS2, including original sources, PKGBUILD recipes, and patches.
+SOURCE-MANIFEST.json records download URLs and SHA-256 values for all archives.
+
+For reproducing individual runtime libraries, unpack the matching source
+package and follow its PKGBUILD in an MSYS2 UCRT64 build environment using
+makepkg-mingw. This is the ordinary MSYS2 package source format. Build tools
+are part of the normal toolchain and are not duplicated in this source archive.
+
+To build UxPlay, extract UxPlay-<commit>.zip into a source/ directory beside
+build-uxplay.sh, then run that script from an MSYS2 UCRT64 shell. It applies
+the included local patch before compilation (requires the MSYS2 patch utility).
+Its CMake
+options are Release, Ninja, and -DNO_MARCH_NATIVE=ON for CPU portability.
+
+package_runtime.py records the packaging process used here. Its expected
+layout is: this-folder/msys64/ucrt64 (MSYS2 prefix),
+this-folder/source/UxPlay-*/build/uxplay.exe (native build), and output at
+../receiver-runtime/native. It collects the selected GStreamer plugins,
+recursively resolves imported non-system DLLs, and copies license notices.
+Adjust these workspace paths for a different local arrangement.
+
+App runtime paths are supplied by the frontend, including the codec scanner,
+plugin search directory, and per-user registry/key/config paths. The runtime
+is not registered globally and installs no system Bonjour service.
+
+See frontend/START-HERE.txt for usage, limitations, and the local validation scope.
