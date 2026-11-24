@@ -36,7 +36,7 @@ Select **USB tethering - Personal Hotspot** in the app and follow **USB setup**.
 
 ## Source and integrity
 
-The app ZIP contains its frontend source and license notices. The [complete corresponding-source bundle](https://github.com/JJDELITE06/pocket-cast/releases/download/v1.1.0/PocketCast-Corresponding-Source-1.1.zip) includes the pinned UxPlay source, the local USB-interface patch, and exact source packages for the bundled native dependencies. It is about 1.2 GB and is not needed to run the app.
+The app ZIP contains its frontend source and license notices. The [complete corresponding-source bundle](SOURCE.md) includes the pinned UxPlay source, the local USB-interface patch, and exact source packages for the bundled native dependencies. It is about 1.2 GB, provided as smaller verified download parts, and is not needed to run the app. The source guide includes a portable download/reassembly script.
 
 Verify downloads against [SHA256SUMS-1.1.txt](https://github.com/JJDELITE06/pocket-cast/releases/download/v1.1.0/SHA256SUMS-1.1.txt). No private pairing keys, user settings, or codec caches are included.
 
